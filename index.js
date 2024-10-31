@@ -28,6 +28,7 @@ constructor({position, velocity, color = 'red', offset }) {
 
         this.color = color
         this.isAttacking = false
+        this.health = 100
     }
 
 draw() {
@@ -170,7 +171,7 @@ function animate () {
     }
 
 
-// detect for collision
+// detect for collision.attacking
 
     if ( 
         rectangularCollision({
@@ -180,7 +181,9 @@ function animate () {
         player.isAttacking
     ) {
         player.isAttacking = false
-        console.log ('hit')
+        enemy.health -= 10
+        document.querySelector ('#enemyHealth').style.width = enemy.health + "%"
+    
     }
 
     if ( 
@@ -191,7 +194,8 @@ function animate () {
         enemy.isAttacking
     ) {
         enemy.isAttacking = false
-        console.log ('bang')
+        player.health -= 10
+        document.querySelector ('#playerHealth').style.width = player.health + "%"
     }
 }
 

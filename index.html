@@ -3,25 +3,97 @@
 <head>
     <title>Nick Chua's FAC Game</title>
     <meta charset="UTF-8" />
-
+    <style>
+    * {
+        box-sizing: border-box;
+    }   
+    </style>
 </head>
 
 
 <body>
-<h1>Game Title</h1>
-<br>
-    <main>
-        <section id="canvas">
-            <h2></h2>
-            <p></p>
-            <canvas></canvas>
-            <script src="index.js"></script>
-    </section>
+    <!--HealthBarPrimary-->        
+    <div style="position: relative; display: inline-block;">
+        <!--HealthBarSecondary-->   
+        <div style="
+            position: absolute; 
+            display: flex; 
+            width: 100%; 
+            align-items: center;
+            padding: 1.5%
+            ">
 
-    </main>
+            <!--Player Health-->
+
+            <div style = "
+            position: relative; 
+            height: 30px; 
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;">
+
+                <div style="
+                background-color: white; 
+                height: 30px;
+                width: 100%">
+                </div>
+ 
+                <div id= "playerHealth" 
+                div style = "
+                position: absolute; 
+                background: red; 
+                top: 0; 
+                right: 0; 
+                bottom: 0; 
+                width: 100%">
+                </div>
+            </div>
+
+            <!--Timer-->
+
+            <div style="
+            background-color: green; 
+            height: 100px; 
+            width: 100px; 
+            flex-shrink: 0;">
+            </div>
+            
+            <!--Enemy Health-->
+
+            <div style = "
+            position: relative; 
+            height: 30px; 
+            width: 100%;">
+
+                <div style="
+                background-color: white; 
+                height: 30px;">
+                </div>
+ 
+                <div id= "enemyHealth" 
+                div style = "
+                position: absolute; 
+                background: blue; 
+                top: 0; 
+                right: 0; 
+                bottom: 0; 
+                left: 0;">
+                </div>
+            </div>
+
+
+
+            <div></div>
+        </div>
+        <canvas></canvas>
+    </div>   
+        
+    <script src="index.js"></script>
     
-    <footer>
-        <p>2024 Nick Chua. All rights reserved.</p>
-    </footer>
 </body>
+
+<footer>
+<p>2024 Nick Chua. All rights reserved.</p>
+</footer>
+
 </html>

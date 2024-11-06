@@ -8,19 +8,17 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 
 const gravity = 0.3
 
-class Sprite {
-constructor({position}) {
-    this.position = position
-    this.width = 50
-    this.height = 150
-    }
-draw() {
-}
-    update() {
-    this.draw()
-    }
-}
-    
+// Background Image
+
+const background = newSprite({
+    position: {
+        x:0,
+        y:0
+    },
+imageSrc: 'Image/Background/example.png'
+})
+
+
 // Player 
 
 const player = new Fighter({
@@ -86,46 +84,8 @@ const keys = {
     },
 
 }
-
 let lastKey
 
-function rectangularCollision ({rectangle1, rectangle2}) {
-    return (
-        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x && 
-        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width && 
-        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y && 
-        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-    )
-}
-
-function determineWinner({player, enemy, timerId}) {
-    clearTimeout(timerId)
-    document.querySelector ('#gameEndTie').style.display = 'flex'
-    if (player.health === enemy.health) {
-        document.querySelector ('#gameEndTie').innerHTML = 'Tie'
-    } else if (player.health > enemy.health) {
-        document.querySelector ('#gameEndTie').innerHTML = 'Player 1 Wins'
-    } else if (player.health < enemy.health)
-        document.querySelector ('#gameEndTie').innerHTML = 'Player 2 Wins'    
-    }
-
-
-let timer = 30
-let timerId
-function decreaseTimer() {
-    
-    if (timer > 0) {
-        timerId = setTimeout (decreaseTimer, 1000)
-        timer--
-    document.querySelector ('#timer').innerHTML = timer
-    }
-
-    if (timer === 0) {
-        document.querySelector ('#gameEndTie').style.display = 'flex'
-        determineWinner({player, enemy, timerId})
-    }
-
-}
 
 decreaseTimer()
 
@@ -133,13 +93,14 @@ function animate () {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas. height)
+    background.update()
     player.update()
     enemy.update()
 
     player.velocity.x = 0
     enemy.velocity.x = 0
 
-// Player Movement
+    // Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -3
@@ -147,7 +108,7 @@ function animate () {
         player.velocity.x = 3
     }
 
-// Enemy Movement
+    // Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -3
@@ -156,7 +117,7 @@ function animate () {
     }
 
 
-// detect for collision.attacking
+    // detect for collision.attacking
 
     if ( 
         rectangularCollision({
@@ -183,11 +144,11 @@ function animate () {
         document.querySelector ('#playerHealth').style.width = player.health + "%"
     }
 
-//End game based on health
+    //End game based on health
 
-if (enemy.health <=0 || player.health <=0 ) {
+    if (enemy.health <=0 || player.health <=0 ) {
     determineWinner ({player, enemy, timerId})
-}
+    }
 
 
 }

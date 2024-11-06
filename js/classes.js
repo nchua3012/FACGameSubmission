@@ -19,7 +19,7 @@ class Sprite {
             this.position = position
             this.velocity = velocity
             this.width = 50
-            this.height = 150
+            this.height = 125
             this.lastKey = null
             this.attackBox = {
                 position: {
@@ -31,7 +31,6 @@ class Sprite {
                     height: 50,
                 },
                 
-        
                 this.color = color
                 this.isAttacking = false
                 this.health = 100
@@ -50,20 +49,17 @@ class Sprite {
         }
                 
             update() {
-            this.draw()
+                this.draw()
+                this.attackBox.position.x = this.position.x + this.attackBox.offset.x
+                this.attackBox.position.y = this.position.y
         
-            this.attackBox.position.x = this.position.x + this.attackBox.offset.x
-            this.attackBox.position.y = this.position.y
+                this.position.x += this.velocity.x;
+                this.position.y += this.velocity.y;
         
-        
-            this.position.x += this.velocity.x;
-            this.position.y += this.velocity.y;
-        
-            if (this.position.y + this.height + this.velocity.y >= canvas.height) {
-                this.position.y = canvas.height - this.height; 
-            } else this.velocity.y += gravity
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 57) {
+                    this.velocity.y = 0
+                    } else this.velocity.y += gravity
             }
-        
         
             attack() {
             this.isAttacking = true

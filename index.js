@@ -10,7 +10,7 @@ const gravity = 0.3
 
 // Background Image
 
-const background = newSprite({
+const background = new Sprite({
     position: {
         x:0,
         y:0
@@ -92,7 +92,7 @@ decreaseTimer()
 function animate () {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
-    c.fillRect(0, 0, canvas.width, canvas. height)
+    c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     player.update()
     enemy.update()
@@ -149,8 +149,6 @@ function animate () {
     if (enemy.health <=0 || player.health <=0 ) {
     determineWinner ({player, enemy, timerId})
     }
-
-
 }
 
 

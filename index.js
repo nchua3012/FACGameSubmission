@@ -59,7 +59,7 @@ sprites: {
         framesMaxY: 6,  // 6 rows of frames
     },
     run: {
-        imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
+        imageSrc:'Image/Character 1/Meow-Knight_Run.png',
         framesMaxX: 1, // 1 frames per row
         framesMaxY: 6,  // 6 rows of frames
     }
@@ -133,11 +133,13 @@ function animate () {
     enemy.velocity.x = 0
 
     // Player Movement
-    
+    player.image = player.sprites.idle.image
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -1.75
+        player.image = player.sprites.run.image
     } else if (keys.d.pressed&& player.lastKey === 'd'){
         player.velocity.x = 1.75
+        player.image = player.sprites.run.image
     }
 
     // Enemy Movement

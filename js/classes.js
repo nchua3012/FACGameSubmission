@@ -99,9 +99,11 @@ animateFrames() {
                 this.framesHold = 19
                 this.sprites = sprites
 
-                for (sprites in sprites) {
-                    
+                for (const sprite in this.sprites) {
+                    sprites[sprite].image = new Image()
+                    sprites[sprite].image.src = sprites[sprite].imageSrc
                 }
+                
             }
         
                 

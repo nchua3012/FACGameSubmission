@@ -1,5 +1,5 @@
 class Sprite {
-    constructor({position, imageSrc, scale = 1, framesMaxX = 1, framesMaxY = 1}) {
+    constructor({position, imageSrc, scale = 1, framesMaxX = 1, framesMaxY = 1, offset = {x:0, y:0}}) {
         this.position = position
         this.width = 50 // This can be adjusted as per your sprite's design
         this.height = 150 // This can be adjusted as per your sprite's design
@@ -10,7 +10,8 @@ class Sprite {
         this.framesMaxY = framesMaxY // Total frames in a column
         this.framesCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 19 // Adjust for speed of animation
+        this.framesHold = 25 // Adjust for speed of animation
+        this.offset = offset
     }
         
     draw() {
@@ -28,24 +29,28 @@ class Sprite {
             frameY * frameHeight,      // Y position on the sprite sheet (current frame in column)
             frameWidth,                // Width of the frame
             frameHeight,               // Height of the frame
-            this.position.x, 
-            this.position.y, 
+            this.position.x - this.offset.x, 
+            this.position.y - this.offset.y, 
             frameWidth * this.scale,   // Draw width with scale
             frameHeight * this.scale   // Draw height with scale
         )
     }
+
+animateFrames() {
+    this.framesElapsed++
+        if (this.framesElapsed % this.framesHold === 0) {
+                if (this.framesCurrent < this.framesMaxX * this.framesMaxY - 1) {
+                this.framesCurrent++
+                } else {
+                this.framesCurrent = 0
+                }
+            }
+    }
+
+
     update() {
         this.draw()
-        this.framesElapsed++
-
-        if (this.framesElapsed % this.framesHold === 0) {
-            if (this.framesCurrent < this.framesMaxX * this.framesMaxY - 1) {
-                this.framesCurrent++
-            } else {
-                this.framesCurrent = 0
-            }
-
-        }
+        this.animateFrames()
         }
     }
         
@@ -53,12 +58,13 @@ class Sprite {
         constructor({
             position, 
             velocity, 
-            color = 'red', 
-            offset, 
+            color = 'red',  
             imageSrc, 
             scale = 1, 
             framesMaxX = 1, 
-            framesMaxY = 1 
+            framesMaxY = 1, 
+            offset= { x: 0, y: 0 },
+            sprites
         }) {
 
             super({
@@ -67,6 +73,7 @@ class Sprite {
                 position,
                 framesMaxX,
                 framesMaxY,
+                offset: { x: 0, y: 0 }
             
             })
 
@@ -90,26 +97,34 @@ class Sprite {
                 this.framesCurrent = 0
                 this.framesElapsed = 0
                 this.framesHold = 19
+                this.sprites = sprites
+
+                for (sprites in sprites) {
+                    
+                }
             }
         
                 
             update() {
                 this.draw()
+                this.animateFrames()
                 this.attackBox.position.x = this.position.x + this.attackBox.offset.x
                 this.attackBox.position.y = this.position.y
         
                 this.position.x += this.velocity.x;
                 this.position.y += this.velocity.y;
         
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 57) {
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 1) {
                     this.velocity.y = 0
                     } else this.velocity.y += gravity
             }
-        
+
+
             attack() {
             this.isAttacking = true
             setTimeout(() => {
                 this.isAttacking = false
             }, 100)
             }
+
         }

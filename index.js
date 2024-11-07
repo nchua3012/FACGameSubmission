@@ -37,7 +37,7 @@ framesMaxY: 5  // 2 rows of frames
 
 const player = new Fighter({
     position: {
-        x:0,
+        x:250,
         y:0
     },
     velocity: {
@@ -48,7 +48,23 @@ const player = new Fighter({
         x: 0,
         y: 0
     },
-imageSrc: 'Image/Background Sprites/Fire+Sparks-Sheet.png',
+imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
+scale: 2.5,
+framesMaxX: 1, // 1 frames per row
+framesMaxY: 6,  // 6 rows of frames
+sprites: {
+    idle:{
+        imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
+        framesMaxX: 1, // 1 frames per row
+        framesMaxY: 6,  // 6 rows of frames
+    },
+    run: {
+        imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
+        framesMaxX: 1, // 1 frames per row
+        framesMaxY: 6,  // 6 rows of frames
+    }
+}
+
 })
 
 player.draw()
@@ -111,7 +127,7 @@ function animate () {
     background.update()
     backgroundFire.update()
     player.update()
-    enemy.update()
+    // enemy.update()
 
     player.velocity.x = 0
     enemy.velocity.x = 0
@@ -119,9 +135,9 @@ function animate () {
     // Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -3
+        player.velocity.x = -1.75
     } else if (keys.d.pressed&& player.lastKey === 'd'){
-        player.velocity.x = 3
+        player.velocity.x = 1.75
     }
 
     // Enemy Movement

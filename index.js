@@ -15,8 +15,22 @@ const background = new Sprite({
         x:0,
         y:0
     },
-imageSrc: 'Image/Background/example.png'
+imageSrc: 'Image/Background/example.png',
 })
+
+// animated fire
+
+const backgroundFire = new Sprite({
+    position: {
+        x:200,
+        y:267
+    },
+imageSrc: 'Image/Background Sprites/Fire+Sparks-Sheet.png',
+scale: .85,
+framesMaxX: 4, // 4 frames per row
+framesMaxY: 5  // 2 rows of frames
+})
+    
 
 
 // Player 
@@ -33,7 +47,8 @@ const player = new Fighter({
     offset: {
         x: 0,
         y: 0
-    }
+    },
+imageSrc: 'Image/Background Sprites/Fire+Sparks-Sheet.png',
 })
 
 player.draw()
@@ -94,6 +109,7 @@ function animate () {
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
+    backgroundFire.update()
     player.update()
     enemy.update()
 

@@ -1,22 +1,75 @@
 class Sprite {
-    constructor({position, imageSrc}) {
+    constructor({position, imageSrc, scale = 1, framesMaxX = 1, framesMaxY = 1}) {
         this.position = position
-        this.width = 50
-        this.height = 150
+        this.width = 50 // This can be adjusted as per your sprite's design
+        this.height = 150 // This can be adjusted as per your sprite's design
         this.image = new Image()
         this.image.src = imageSrc
-        }
-    draw() {
-        c.drawImage(this.image, this.position.x, this.position.y)
+        this.scale = scale
+        this.framesMaxX = framesMaxX // Total frames in a row
+        this.framesMaxY = framesMaxY // Total frames in a column
+        this.framesCurrent = 0
+        this.framesElapsed = 0
+        this.framesHold = 19 // Adjust for speed of animation
     }
-        update() {
+        
+    draw() {
+        // Calculate the frame width and height based on sprite sheet dimensions and number of frames
+        const frameWidth = this.image.width / this.framesMaxX;
+        const frameHeight = this.image.height / this.framesMaxY;
+
+        // Determine which row and column to use for the current frame
+        const frameX = this.framesCurrent % this.framesMaxX; // Horizontal position (column)
+        const frameY = Math.floor(this.framesCurrent / this.framesMaxX); // Vertical position (row)
+
+        c.drawImage(
+            this.image,
+            frameX * frameWidth,       // X position on the sprite sheet (current frame in row)
+            frameY * frameHeight,      // Y position on the sprite sheet (current frame in column)
+            frameWidth,                // Width of the frame
+            frameHeight,               // Height of the frame
+            this.position.x, 
+            this.position.y, 
+            frameWidth * this.scale,   // Draw width with scale
+            frameHeight * this.scale   // Draw height with scale
+        )
+    }
+    update() {
         this.draw()
+        this.framesElapsed++
+
+        if (this.framesElapsed % this.framesHold === 0) {
+            if (this.framesCurrent < this.framesMaxX * this.framesMaxY - 1) {
+                this.framesCurrent++
+            } else {
+                this.framesCurrent = 0
+            }
+
+        }
         }
     }
         
-    class Fighter {
-        constructor({position, velocity, color = 'red', offset }) {
-            this.position = position
+    class Fighter extends Sprite {
+        constructor({
+            position, 
+            velocity, 
+            color = 'red', 
+            offset, 
+            imageSrc, 
+            scale = 1, 
+            framesMaxX = 1, 
+            framesMaxY = 1 
+        }) {
+
+            super({
+                imageSrc,
+                scale,
+                position,
+                framesMaxX,
+                framesMaxY,
+            
+            })
+
             this.velocity = velocity
             this.width = 50
             this.height = 125
@@ -34,19 +87,11 @@ class Sprite {
                 this.color = color
                 this.isAttacking = false
                 this.health = 100
+                this.framesCurrent = 0
+                this.framesElapsed = 0
+                this.framesHold = 19
             }
         
-        draw() {
-        
-            c.fillStyle = this.color
-            c.fillRect(this.position.x, this.position.y, this.width, this.height)
-        
-            // attack box
-            if (this.isAttacking) {
-                c.fillStyle = 'green'
-                c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
-                }
-        }
                 
             update() {
                 this.draw()

@@ -10,7 +10,7 @@ class Sprite {
         this.image.onload = () => {
             this.width = this.image.width / framesMaxX;
             this.height = this.image.height / framesMaxY;
-        }
+        };
 
         this.scale = scale
         this.framesMaxX = framesMaxX // Total frames in a row
@@ -58,7 +58,6 @@ animateFrames() {
             }
     }
 
-
     update() {
         this.draw()
         this.animateFrames()
@@ -76,9 +75,11 @@ animateFrames() {
             framesMaxY = 1, 
             offset= { x: 0, y: 0 },
             sprites,
+            
+            
         }) {
 
-            super({
+            super ({
                 imageSrc,
                 scale,
                 position,
@@ -106,19 +107,19 @@ animateFrames() {
                     height: 50,
                 };
                 
-                this.color = color,
-                this.isAttacking = false,
-                this.health = 100,
-                this.framesCurrent = 0,
-                this.framesElapsed = 0,
-                this.framesHold = 19,
-                this.sprites = sprites
+                this.color = color;
+                this.isAttacking = false;
+                this.health = 100;
+                this.framesCurrent = 0;
+                this.framesElapsed = 0;
+                this.framesHold = 19;
+                this.sprites = sprites;
 
                 for (const sprite in this.sprites) { 
                     sprites[sprite].image = new Image()
                     sprites[sprite].image.src = sprites[sprite].imageSrc
                 }
-                
+                console.log(this.sprites)
             }
         
                 
@@ -135,45 +136,61 @@ animateFrames() {
                 this.position.y += this.velocity.y;
         
                 //gravity
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 150) {
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 153) {
                     this.velocity.y = 0;
-                    this.position.y = canvas.height - this.height - 150;
+                    this.position.y = canvas.height - this.height - 153;
                     } else {
                         this.velocity.y += gravity}
             }
 
-            SwitchSprite(sprite) {
+            switchSprite(sprite) {
+                if ( 
+                    this.image === this.sprites.attack.image 
+                    && this.framesCurrent < this.sprites.attack.framesMaxX - 1
+                ) 
+                return
+
                 switch (sprite) {
                     case 'idle':
                         if (this.image !== this.sprites.idle.image) {
-                            this.image = this.sprites.idle.image
-                            this.framesMaxX = this.sprites.idle.frameX
-                            this.framesMaxY = this.sprites.idle.frameY
-                            this.framesCurrent = 0
+                            this.image = this.sprites.idle.image;
+                            this.framesMaxX = this.sprites.idle.framesMaxX;
+                            this.framesMaxY = this.sprites.idle.framesMaxY;
+                            this.framesCurrent = 0;
                         }
                     break
 
                     case 'run':
                         if (this.image !== this.sprites.run.image) {
-                            this.image = this.sprites.run.image
-                            this.framesMaxX = this.sprites.run.frameX
-                            this.framesMaxY = this.sprites.run.frameY
-                            this.framesCurrent = 0
+                            this.image = this.sprites.run.image;
+                            this.framesMaxX = this.sprites.run.framesMaxX;
+                            this.framesMaxY = this.sprites.run.framesMaxY;
+                            this.framesCurrent = 0;
                         }
                     break
 
                     case 'jump':
-                        if (this.image !== this.sprites.run.image) {
-                            this.image = this.sprites.jump.image
-                            this.framesMaxX = this.sprites.jump.frameX
-                            this.framesMaxY = this.sprites.jump.frameY
-                            this.framesCurrent = 0
+                        if (this.image !== this.sprites.jump.image) {
+                            this.image = this.sprites.jump.image;
+                            this.framesMaxX = this.sprites.jump.framesMaxX;
+                            this.framesMaxY = this.sprites.jump.framesMaxY;
+                            this.framesCurrent = 0;
+                        }
+                    break
+
+                    case 'attack':
+                        if (this.image !== this.sprites.attack.image) {
+                            this.image = this.sprites.attack.image;
+                            this.framesMaxX = this.sprites.attack.framesMaxX;
+                            this.framesMaxY = this.sprites.attack.framesMaxY;
+                            this.framesCurrent = 0;
                         }
                     break
                 }
             }
 
             attack() {
+            this.switchSprite('attack')
             this.isAttacking = true
             setTimeout(() => {
                 this.isAttacking = false

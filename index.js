@@ -39,7 +39,7 @@ framesMaxY: 5  // 2 rows of frames
 const player = new Fighter({
     position: {
         x: 250,
-        y: canvas.height - 305,
+        y: 0,
     },
     velocity: {
         x:0,
@@ -51,17 +51,19 @@ const player = new Fighter({
     },
     
 imageSrc:'Image/Character 1/yellowNinja - idle.png',
-scale: 2,
+scale: 2.3,
 framesMaxX: 8, // 1 frames per row
 framesMaxY: 1,  // 6 rows of frames
-
-
+offset: {
+    x:0,
+    y:0
+},
 
 sprites: {
     idle:{
         imageSrc:'Image/Character 1/yellowNinja - idle.png',
-        framesMaxX: 8, // 1 frames per row
-        framesMaxY: 1,  // 6 rows of frames
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
     },
     run: {
         imageSrc:'Image/Character 1/yellowNinja - walk.png',
@@ -70,9 +72,20 @@ sprites: {
     },
     jump: {
         imageSrc:'Image/Character 1/yellowNinja - hit.png',
-        framesMaxX: 4, // 1 frames per row
-        framesMaxY: 1,  // 6 rows of frames
+        framesMaxX: 4, // 4 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    fall: {
+        imageSrc:'Image/Character 1/yellowNinja - hit.png',
+        framesMaxX: 4, // 4 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    attack: {
+        imageSrc:'Image/Character 1/yellowNinja - attack.png',
+        framesMaxX: 20, // 20 frames per row
+        framesMaxY: 1,  // 1 rows of frames
     }
+
 }
 
 })
@@ -83,8 +96,8 @@ player.draw()
 
 const enemy = new Fighter({
     position: {
-        x:400,
-        y:100
+        x:600,
+        y:0
     },
     velocity: {
         x:0,
@@ -92,8 +105,45 @@ const enemy = new Fighter({
     },
     color: 'blue',
     offset: {
-        x: -50,
+        x: 0,
         y: 0
+    },
+
+imageSrc:'Image/Character 2/Dead_idle.png',
+scale: 2.3,
+framesMaxX: 8, // 1 frames per row
+framesMaxY: 1,  // 6 rows of frames
+offset: {
+    x:0,
+    y:0,
+},
+
+sprites: {
+    idle:{
+        imageSrc:'Image/Character 2/Dead_idle.png',
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    run: {
+        imageSrc:'Image/Character 2/Dead_idle.png',
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    jump: {
+        imageSrc:'Image/Character 2/Dead_idle.png',
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    fall: {
+        imageSrc:'Image/Character 1/yellowNinja - hit.png',
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    attack: {
+        imageSrc:'Image/Character 2/Dead_attack.png',
+        framesMaxX: 8, // 8 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    }
     }
 })
     
@@ -125,6 +175,7 @@ const keys = {
     },
 
 }
+
 let lastKey
 
 
@@ -137,7 +188,7 @@ function animate () {
     background.update()
     backgroundFire.update()
     player.update()
-    // enemy.update()
+    enemy.update()
 
     player.velocity.x = 0
     enemy.velocity.x = 0
@@ -146,27 +197,41 @@ function animate () {
     
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -1.75
-        player.SwitchSprite('run')
+        player.switchSprite('run')
     } else if (keys.d.pressed&& player.lastKey === 'd'){
         player.velocity.x = 1.75
-        player.SwitchSprite('run')
+        player.switchSprite('run')
     } else {
-        player.SwitchSprite('idle')
+        player.switchSprite('idle')
     }
 
+    // jumping
+
     if (player.velocity.y < 0) {
-    player.SwitchSprite('jump')
-    }
+    player.switchSprite('jump')
+    } 
+
+    
 
 
 
     // Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -3
+        enemy.velocity.x = -1.75
+        enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight'){
-        enemy.velocity.x = 3
+        enemy.velocity.x = 1.75
+        enemy.switchSprite('run')
+    } else {
+        enemy.switchSprite('idle')
     }
+
+// jumping
+
+if (enemy.velocity.y < 0) {
+    enemy.switchSprite('jump')
+    } 
 
 
     // detect for collision.attacking

@@ -23,8 +23,9 @@ imageSrc: 'Image/Background/example.png',
 const backgroundFire = new Sprite({
     position: {
         x:200,
-        y:267
+        y:261
     },
+
 imageSrc: 'Image/Background Sprites/Fire+Sparks-Sheet.png',
 scale: .85,
 framesMaxX: 4, // 4 frames per row
@@ -37,8 +38,8 @@ framesMaxY: 5  // 2 rows of frames
 
 const player = new Fighter({
     position: {
-        x:250,
-        y:0
+        x: 250,
+        y: canvas.height - 305,
     },
     velocity: {
         x:0,
@@ -48,20 +49,29 @@ const player = new Fighter({
         x: 0,
         y: 0
     },
-imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
-scale: 2.5,
-framesMaxX: 1, // 1 frames per row
-framesMaxY: 6,  // 6 rows of frames
+    
+imageSrc:'Image/Character 1/yellowNinja - idle.png',
+scale: 2,
+framesMaxX: 8, // 1 frames per row
+framesMaxY: 1,  // 6 rows of frames
+
+
+
 sprites: {
     idle:{
-        imageSrc:'Image/Character 1/Meow-Knight_Idle.png',
-        framesMaxX: 1, // 1 frames per row
-        framesMaxY: 6,  // 6 rows of frames
+        imageSrc:'Image/Character 1/yellowNinja - idle.png',
+        framesMaxX: 8, // 1 frames per row
+        framesMaxY: 1,  // 6 rows of frames
     },
     run: {
-        imageSrc:'Image/Character 1/Meow-Knight_Run.png',
-        framesMaxX: 1, // 1 frames per row
-        framesMaxY: 6,  // 6 rows of frames
+        imageSrc:'Image/Character 1/yellowNinja - walk.png',
+        framesMaxX: 10, // 10 frames per row
+        framesMaxY: 1,  // 1 rows of frames
+    },
+    jump: {
+        imageSrc:'Image/Character 1/yellowNinja - hit.png',
+        framesMaxX: 4, // 1 frames per row
+        framesMaxY: 1,  // 6 rows of frames
     }
 }
 
@@ -133,14 +143,22 @@ function animate () {
     enemy.velocity.x = 0
 
     // Player Movement
-    player.image = player.sprites.idle.image
+    
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -1.75
-        player.image = player.sprites.run.image
+        player.SwitchSprite('run')
     } else if (keys.d.pressed&& player.lastKey === 'd'){
         player.velocity.x = 1.75
-        player.image = player.sprites.run.image
+        player.SwitchSprite('run')
+    } else {
+        player.SwitchSprite('idle')
     }
+
+    if (player.velocity.y < 0) {
+    player.SwitchSprite('jump')
+    }
+
+
 
     // Enemy Movement
     

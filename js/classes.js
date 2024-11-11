@@ -1,10 +1,17 @@
 class Sprite {
     constructor({position, imageSrc, scale = 1, framesMaxX = 1, framesMaxY = 1, offset = {x:0, y:0}}) {
         this.position = position
-        this.width = 50 // This can be adjusted as per your sprite's design
-        this.height = 150 // This can be adjusted as per your sprite's design
+        this.width = 50 // adjust according to sprite
+        this.height = 200 // adjust according to sprite
         this.image = new Image()
         this.image.src = imageSrc
+
+        // load before accessing width and height
+        this.image.onload = () => {
+            this.width = this.image.width / framesMaxX;
+            this.height = this.image.height / framesMaxY;
+        }
+
         this.scale = scale
         this.framesMaxX = framesMaxX // Total frames in a row
         this.framesMaxY = framesMaxY // Total frames in a column
@@ -15,6 +22,10 @@ class Sprite {
     }
         
     draw() {
+
+        // Ensure the image is loaded before drawing
+        if (!this.image) return;
+
         // Calculate the frame width and height based on sprite sheet dimensions and number of frames
         const frameWidth = this.image.width / this.framesMaxX;
         const frameHeight = this.image.height / this.framesMaxY;
@@ -64,7 +75,7 @@ animateFrames() {
             framesMaxX = 1, 
             framesMaxY = 1, 
             offset= { x: 0, y: 0 },
-            sprites
+            sprites,
         }) {
 
             super({
@@ -73,14 +84,18 @@ animateFrames() {
                 position,
                 framesMaxX,
                 framesMaxY,
-                offset: { x: 0, y: 0 }
+                offset: { x: 0, y: 0 },
             
             })
 
             this.velocity = velocity
             this.width = 50
-            this.height = 125
+            this.height = 200
             this.lastKey = null
+
+            // Ensure that the initial position.y is within the canvas bounds
+            this.position.y = this.position.y || canvas.height - this.height;
+
             this.attackBox = {
                 position: {
                 x: this.position.x,
@@ -89,17 +104,17 @@ animateFrames() {
                 offset,
                     width: 100,
                     height: 50,
-                },
+                };
                 
-                this.color = color
-                this.isAttacking = false
-                this.health = 100
-                this.framesCurrent = 0
-                this.framesElapsed = 0
-                this.framesHold = 19
+                this.color = color,
+                this.isAttacking = false,
+                this.health = 100,
+                this.framesCurrent = 0,
+                this.framesElapsed = 0,
+                this.framesHold = 19,
                 this.sprites = sprites
 
-                for (const sprite in this.sprites) {
+                for (const sprite in this.sprites) { 
                     sprites[sprite].image = new Image()
                     sprites[sprite].image.src = sprites[sprite].imageSrc
                 }
@@ -108,19 +123,55 @@ animateFrames() {
         
                 
             update() {
-                this.draw()
-                this.animateFrames()
-                this.attackBox.position.x = this.position.x + this.attackBox.offset.x
-                this.attackBox.position.y = this.position.y
+                this.draw();
+                this.animateFrames();
+
+                //updates to attach box positioning
+                this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
+                this.attackBox.position.y = this.position.y;
         
+                //updates to players position - velocity
                 this.position.x += this.velocity.x;
                 this.position.y += this.velocity.y;
         
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 1) {
-                    this.velocity.y = 0
-                    } else this.velocity.y += gravity
+                //gravity
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 150) {
+                    this.velocity.y = 0;
+                    this.position.y = canvas.height - this.height - 150;
+                    } else {
+                        this.velocity.y += gravity}
             }
 
+            SwitchSprite(sprite) {
+                switch (sprite) {
+                    case 'idle':
+                        if (this.image !== this.sprites.idle.image) {
+                            this.image = this.sprites.idle.image
+                            this.framesMaxX = this.sprites.idle.frameX
+                            this.framesMaxY = this.sprites.idle.frameY
+                            this.framesCurrent = 0
+                        }
+                    break
+
+                    case 'run':
+                        if (this.image !== this.sprites.run.image) {
+                            this.image = this.sprites.run.image
+                            this.framesMaxX = this.sprites.run.frameX
+                            this.framesMaxY = this.sprites.run.frameY
+                            this.framesCurrent = 0
+                        }
+                    break
+
+                    case 'jump':
+                        if (this.image !== this.sprites.run.image) {
+                            this.image = this.sprites.jump.image
+                            this.framesMaxX = this.sprites.jump.frameX
+                            this.framesMaxY = this.sprites.jump.frameY
+                            this.framesCurrent = 0
+                        }
+                    break
+                }
+            }
 
             attack() {
             this.isAttacking = true

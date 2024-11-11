@@ -19,6 +19,7 @@ class Sprite {
         this.framesElapsed = 0
         this.framesHold = 25 // Adjust for speed of animation
         this.offset = offset
+
     }
         
     draw() {
@@ -136,9 +137,9 @@ animateFrames() {
                 this.position.y += this.velocity.y;
         
                 //gravity
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 153) {
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 220) {
                     this.velocity.y = 0;
-                    this.position.y = canvas.height - this.height - 153;
+                    this.position.y = canvas.height - this.height - 220;
                     } else {
                         this.velocity.y += gravity}
             }

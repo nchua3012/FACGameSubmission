@@ -50,10 +50,10 @@ const player = new Fighter({
         y: 0
     },
     
-imageSrc:'Image/Character 1/yellowNinja - idle.png',
-scale: 2.3,
-framesMaxX: 8, // 1 frames per row
-framesMaxY: 1,  // 6 rows of frames
+imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+scale: 1.75,
+framesMaxX: 30, // 1 frames per row
+framesMaxY: 13,  // 6 rows of frames
 offset: {
     x:0,
     y:0
@@ -61,29 +61,29 @@ offset: {
 
 sprites: {
     idle:{
-        imageSrc:'Image/Character 1/yellowNinja - idle.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 8 frames per row
+        framesMaxY: 13,  // 1 rows of frames
     },
     run: {
-        imageSrc:'Image/Character 1/yellowNinja - walk.png',
-        framesMaxX: 10, // 10 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 10 frames per row
+        framesMaxY: 13,  // 1 rows of frames
     },
     jump: {
-        imageSrc:'Image/Character 1/yellowNinja - hit.png',
-        framesMaxX: 4, // 4 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 4 frames per row
+        framesMaxY: 13,  // 1 rows of frames
     },
     fall: {
-        imageSrc:'Image/Character 1/yellowNinja - hit.png',
-        framesMaxX: 4, // 4 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 4 frames per row
+        framesMaxY: 13,  // 1 rows of frames
     },
     attack: {
-        imageSrc:'Image/Character 1/yellowNinja - attack.png',
-        framesMaxX: 20, // 20 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 20 frames per row
+        framesMaxY: 13,  // 1 rows of frames
     }
 
 }
@@ -109,10 +109,10 @@ const enemy = new Fighter({
         y: 0
     },
 
-imageSrc:'Image/Character 2/Dead_idle.png',
-scale: 2.3,
-framesMaxX: 8, // 1 frames per row
-framesMaxY: 1,  // 6 rows of frames
+imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+scale: 1.75,
+framesMaxX: 25, // 1 frames per row
+framesMaxY: 14,  // 6 rows of frames
 offset: {
     x:0,
     y:0,
@@ -120,29 +120,29 @@ offset: {
 
 sprites: {
     idle:{
-        imageSrc:'Image/Character 2/Dead_idle.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 8 frames per row
+        framesMaxY: 14,  // 1 rows of frames
     },
     run: {
-        imageSrc:'Image/Character 2/Dead_idle.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 8 frames per row
+        framesMaxY: 14,  // 1 rows of frames
     },
     jump: {
-        imageSrc:'Image/Character 2/Dead_idle.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 8 frames per row
+        framesMaxY: 14,  // 1 rows of frames
     },
     fall: {
-        imageSrc:'Image/Character 1/yellowNinja - hit.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 8 frames per row
+        framesMaxY: 14,  // 1 rows of frames
     },
     attack: {
-        imageSrc:'Image/Character 2/Dead_attack.png',
-        framesMaxX: 8, // 8 frames per row
-        framesMaxY: 1,  // 1 rows of frames
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 8 frames per row
+        framesMaxY: 14,  // 1 rows of frames
     }
     }
 })

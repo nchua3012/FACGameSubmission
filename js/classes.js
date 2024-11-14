@@ -1,15 +1,14 @@
-
 //Sprite Class
 
 class Sprite {
     constructor({position, imageSrc, scale = 1, framesMaxX = 1, framesMaxY = 1, row = 0, validFrames = [], offset = {x:0, y:0}}) { // default values
         this.position = position
-        this.width = 50 
-        this.height = 200 
+        this.width = 50
+        this.height = 200
         this.image = new Image()
         this.image.src = imageSrc
 
-        // load before accessing width and height
+// load before accessing width and height
         this.image.onload = () => {
             this.width = this.image.width / framesMaxX;
             this.height = this.image.height / framesMaxY;
@@ -20,25 +19,35 @@ class Sprite {
         this.framesMaxY = framesMaxY // Total frames in a column
         this.framesCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 17 // Adjust for speed of animation
+        this.framesHold = 19 // Adjust for speed of animation
         this.offset = offset
         this.row = row
         this.validFrames = validFrames
+        this.facing = "right"
 
     }
         
     draw() {
 
-        // code addded to ensure the image is loaded before drawing - need to understand
+// code addded to ensure the image is loaded before drawing - need to understand
         if (!this.image) return;
 
-        // Calculate the frame width and height based on sprite sheet dimensions and number of frames
+// Calculate the frame width and height based on sprite sheet dimensions and number of frames
         const frameWidth = this.image.width / this.framesMaxX;
         const frameHeight = this.image.height / this.framesMaxY;
 
-        
+        c.save();
 
-        // Determine which row and column to use for the current frame
+// character direction based on left or right
+if (this.facing === "left") {
+    c.translate(this.position.x + frameWidth * this.scale, this.position.y);  // Translate position for flipping
+    c.scale(-1, 1);  // Flip horizontally
+    c.translate(-this.offset.x, -this.offset.y);  // Adjust for offset
+} else {
+    c.translate(this.position.x - this.offset.x, this.position.y - this.offset.y);  // Regular positioning
+}
+
+// Determine which row and column to use for the current frame
         const frameX = this.validFrames[this.framesCurrent] % this.framesMaxX; // vertical position (column)
         const frameY = this.row; // horizontal position (row)
 
@@ -48,11 +57,18 @@ class Sprite {
             frameY * frameHeight,      // Y position on the sprite sheet (current frame in column)
             frameWidth,                // Width of the frame
             frameHeight,               // Height of the frame
-            this.position.x - this.offset.x, 
-            this.position.y - this.offset.y, 
+            0,0,
             frameWidth * this.scale,   // Draw width with scale
             frameHeight * this.scale   // Draw height with scale
         )
+
+// DEBUG - border around the sprite frame
+        c.strokeStyle = "pink";  // Set the color of the border
+        c.lineWidth = 1;  // Set the width of the border
+        c.strokeRect(0, 0, frameWidth * this.scale, frameHeight * this.scale);  // Draw the border around the sprite
+
+
+        c.restore();
     }
 
 animateFrames() {
@@ -72,9 +88,7 @@ animateFrames() {
         }
     }
         
-
 //Fighter (player 1 & player 2)
-
 
     class Fighter extends Sprite {
         constructor({
@@ -88,7 +102,8 @@ animateFrames() {
             validFrames = [],
             offset= { x: 0, y: 0 },
             sprites,
-            
+            attackBox = {offset: {}, width:undefined, height:undefined},
+            characterBox = { width: undefined, height: undefined }
         }) {
 
 //super calls sprite class constructers
@@ -106,10 +121,21 @@ animateFrames() {
 
             this.velocity = velocity
             this.width = 50
-            this.height = 200
+            this.height = 75
             this.lastKey = null
 
+// characterBox if provided, else use default size
+this.characterBox = {
+    position: {
+        x: this.position.x,
+        y: this.position.y
+    },
+    width: characterBox.width || this.width,  
+    height: characterBox.height || this.height  
+};
+
 //start position.y is within the canvas bounds
+
             this.position.y = this.position.y || canvas.height - this.height;
 
 
@@ -119,10 +145,11 @@ animateFrames() {
                 x: this.position.x,
                 y: this.position.y
                 },
-                offset,
-                    width: 100,
-                    height: 50,
-                };
+                offset: attackBox.offset || { x: 0, y: 0 },
+                width: attackBox.width || 100,
+                height: attackBox.height || 50
+                },
+                
                 
                 this.color = color;
                 this.isAttacking = false;
@@ -138,36 +165,56 @@ animateFrames() {
                 }
                 console.log(this.sprites)
             }
-        
                 
             update() {
                 this.draw();
                 this.animateFrames();
 
-                //updates to attack box positioning
+//character directions based on velocity            
+                if (this.velocity.x > 0) {
+                    this.facing = "right";
+                } else if (this.velocity.x < 0) {
+                    this.facing = "left";
+                }
+
+ //character movement horizontally                
+                this.position.x += this.velocity.x;  // Horizontal movement
+                this.position.y += this.velocity.y;  // Vertical movement
+
+
+//updates to attack box positioning
                 this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-                this.attackBox.position.y = this.position.y;
+                this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+
+
+
+ // DEBUG - attack box area               
+c.fillStyle = player.color
+c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
         
-                //updates to players position - velocity
-                this.position.x += this.velocity.x;
-                this.position.y += this.velocity.y;
+//updates to players position - velocity
+                this.characterBox.position.x = this.position.x;
+                this.characterBox.position.y = this.position.y;
+
+ // DEBUG - character box area  
+c.fillStyle = "rgba(0, 255, 0, 0.3)";  // Green with some transparency
+c.fillRect(this.characterBox.position.x, this.characterBox.position.y, this.characterBox.width, this.characterBox.height);
+
+
         
-                //gravity effect
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 160) {
+//gravity effect
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 190) {
                     this.velocity.y = 0;
-                    this.position.y = canvas.height - this.height - 160;
+                    this.position.y = canvas.height - this.height - 190;
                     } else {
                         this.velocity.y += gravity}
 
-                // attacking      
+// attacking      
                 if (this.isAttacking && this.framesCurrent === this.sprites.attack.framesMaxX - 1) {
                         this.isAttacking = false;
                             this.switchSprite('idle');  
                         }
             }
-            
-            
-    
 
 // swapping sprites based on action
 
@@ -243,11 +290,6 @@ animateFrames() {
                     this.switchSprite('attack');
                     this.isAttacking = true;
         
-                    const attackDuration = this.sprites.attack.framesMaxX * this.framesHold;
-        
-                    setTimeout(() => {
-                        this.isAttacking = false;
-                    }, 100);
                 }
             }
         }

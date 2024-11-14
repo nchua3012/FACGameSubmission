@@ -6,7 +6,7 @@ canvas.height = 576
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.3
+const gravity = 0.25
 
 // Background Image
 
@@ -53,7 +53,7 @@ const player = new Fighter({
     },
     
 imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
-scale: 1.8,
+scale: 2,
 framesMaxX: 30, // 30 frames per row
 framesMaxY: 13,  // 13 rows of frames
 offset: {
@@ -94,12 +94,18 @@ sprites: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
         framesMaxX: 30, // 20 frames per row
         framesMaxY: 13,  // 1 rows of frames
-        row: 7,
-        validFrames: [0, 1, 2, 3, 4, 5, 6, 7],
+        row: 4,
+        validFrames: [0,1,2,3,4,5,6],
     }
-
+},
+attackBox:{
+    offset:{
+        x:0,
+        y:0
+    },
+    width: 100,
+    height:50
 }
-
 });
 console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player1 start position
 
@@ -123,7 +129,7 @@ const enemy = new Fighter({
     },
 
 imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
-scale: 2,
+scale: 2.2,
 framesMaxX: 25, // 1 frames per row
 framesMaxY: 14,  // 6 rows of frames
 offset: {
@@ -166,8 +172,16 @@ sprites: {
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
         validFrames: [0, 1, 2, 3, 4, 5, 6],
-        row: 6,
-    }
+        row: 4,
+        },
+    },
+    attackBox:{
+        offset:{
+            x:100,
+            y:150
+        },
+        width: 100,
+        height: 50
     }
 });
 console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player2 start position
@@ -234,7 +248,9 @@ function animate () {
 
     if (player.velocity.y < 0) {
     player.switchSprite('jump')
-    } 
+    } else if (player.velocity.y > 0) {
+        player.switchSprite('fall')
+        } 
 
     // Enemy Movement
     
@@ -252,7 +268,9 @@ function animate () {
 
 if (enemy.velocity.y < 0) {
     enemy.switchSprite('jump')
-    } 
+    } else if (enemy.velocity.y > 0) {
+        enemy.switchSprite('fall')
+        } 
 
 
     // detect for collision.attacking

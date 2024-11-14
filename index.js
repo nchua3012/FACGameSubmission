@@ -16,6 +16,7 @@ const background = new Sprite({
         y:0
     },
 imageSrc: 'Image/Background/example.png',
+validFrames: [0],
 })
 
 // animated fire
@@ -29,7 +30,8 @@ const backgroundFire = new Sprite({
 imageSrc: 'Image/Background Sprites/Fire+Sparks-Sheet.png',
 scale: .85,
 framesMaxX: 4, // 4 frames per row
-framesMaxY: 5  // 2 rows of frames
+framesMaxY: 5,  // 2 rows of frames
+validFrames: [0, 1, 2, 3, 4, 5],
 })
     
 
@@ -38,7 +40,7 @@ framesMaxY: 5  // 2 rows of frames
 
 const player = new Fighter({
     position: {
-        x: 250,
+        x: 50,
         y: 0,
     },
     velocity: {
@@ -51,9 +53,9 @@ const player = new Fighter({
     },
     
 imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
-scale: 1.75,
-framesMaxX: 30, // 1 frames per row
-framesMaxY: 13,  // 6 rows of frames
+scale: 1.8,
+framesMaxX: 30, // 30 frames per row
+framesMaxY: 13,  // 13 rows of frames
 offset: {
     x:0,
     y:0
@@ -64,31 +66,42 @@ sprites: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
         framesMaxX: 30, // 8 frames per row
         framesMaxY: 13,  // 1 rows of frames
+        row: 0,
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7],
     },
     run: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
-        framesMaxX: 30, // 10 frames per row
+        framesMaxX: 30, // 8 frames per row
         framesMaxY: 13,  // 1 rows of frames
+        row: 1,
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7],
     },
     jump: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
         framesMaxX: 30, // 4 frames per row
         framesMaxY: 13,  // 1 rows of frames
+        row: 2,
+        validFrames: [0, 1, 2],
     },
     fall: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
         framesMaxX: 30, // 4 frames per row
         framesMaxY: 13,  // 1 rows of frames
+        row: 3,
+        validFrames: [0, 1, 2],
     },
     attack: {
         imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
         framesMaxX: 30, // 20 frames per row
         framesMaxY: 13,  // 1 rows of frames
+        row: 7,
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7],
     }
 
 }
 
-})
+});
+console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player1 start position
 
 player.draw()
 
@@ -96,7 +109,7 @@ player.draw()
 
 const enemy = new Fighter({
     position: {
-        x:600,
+        x:400,
         y:0
     },
     velocity: {
@@ -110,7 +123,7 @@ const enemy = new Fighter({
     },
 
 imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
-scale: 1.75,
+scale: 2,
 framesMaxX: 25, // 1 frames per row
 framesMaxY: 14,  // 6 rows of frames
 offset: {
@@ -123,30 +136,42 @@ sprites: {
         imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
+        validFrames: [0, 1, 2, 3, 4, 5],
+        row: 0,
+        
     },
     run: {
         imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7],
+        row: 1,
     },
     jump: {
         imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
+        validFrames: [0, 1, 2],
+        row: 2,
     },
     fall: {
         imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
+        validFrames: [0, 1, 2],
+        row: 3,
     },
     attack: {
         imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
         framesMaxX: 25, // 8 frames per row
         framesMaxY: 14,  // 1 rows of frames
+        validFrames: [0, 1, 2, 3, 4, 5, 6],
+        row: 6,
     }
     }
-})
-    
+});
+console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player2 start position
+
 enemy.draw()
 
 // Player Movement
@@ -210,10 +235,6 @@ function animate () {
     if (player.velocity.y < 0) {
     player.switchSprite('jump')
     } 
-
-    
-
-
 
     // Enemy Movement
     

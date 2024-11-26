@@ -6,7 +6,7 @@ canvas.height = 576
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.25
+const gravity = 0.14
 
 // Background Image
 
@@ -56,10 +56,6 @@ imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
 scale: 2,
 framesMaxX: 30, // 30 frames per row
 framesMaxY: 13,  // 13 rows of frames
-offset: {
-    x:0,
-    y:0
-},
 
 sprites: {
     idle:{
@@ -95,17 +91,42 @@ sprites: {
         framesMaxX: 30, // 20 frames per row
         framesMaxY: 13,  // 1 rows of frames
         row: 4,
-        validFrames: [0,1,2,3,4,5,6],
+        validFrames: [0, 1, 2, 3, 4, 5, 6],
+    },
+    takeHit: {
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 20 frames per row
+        framesMaxY: 13,  // 1 rows of frames
+        row: 11,
+        validFrames: [0, 1, 2, 3, 4, 5],
+    },
+    death: {
+        imageSrc:'Image/Character 1/wind_SpriteSheet_288x128.png',
+        framesMaxX: 30, // 20 frames per row
+        framesMaxY: 13,  // 1 rows of frames
+        row: 12,
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
     }
+
 },
 attackBox:{
     offset:{
-        x:0,
-        y:0
+        x:160,
+        y:90
     },
-    width: 100,
-    height:50
-}
+    width: 75,
+    height:75
+},
+
+characterBox: { 
+    offset: { 
+        x: 130, 
+        y: 90
+    }, 
+    width: 50, // player 1 characterbox width
+    height: 75, // player 1 characterbox height
+},
+
 });
 console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player1 start position
 
@@ -115,8 +136,8 @@ player.draw()
 
 const enemy = new Fighter({
     position: {
-        x:400,
-        y:0
+        x: 350,
+        y: 0
     },
     velocity: {
         x:0,
@@ -132,10 +153,6 @@ imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
 scale: 2.2,
 framesMaxX: 25, // 1 frames per row
 framesMaxY: 14,  // 6 rows of frames
-offset: {
-    x:0,
-    y:0,
-},
 
 sprites: {
     idle:{
@@ -174,15 +191,37 @@ sprites: {
         validFrames: [0, 1, 2, 3, 4, 5, 6],
         row: 4,
         },
+    takeHit: {
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 20 frames per row
+        framesMaxY: 14,  // 1 rows of frames
+        row: 12,
+        validFrames: [0, 1, 2, 3, 4, 5],
+        },
+    death: {
+        imageSrc:'Image/Character 2/ground_monk_FREE_v1.3-SpriteSheet_288x128.png',
+        framesMaxX: 25, // 20 frames per row
+        framesMaxY: 14,  // 1 rows of frames
+        row: 13,
+        validFrames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+        }
     },
     attackBox:{
         offset:{
             x:100,
-            y:150
+            y:90
         },
-        width: 100,
-        height: 50
-    }
+        width: 75,
+        height: 75
+    },
+    characterBox: { 
+        offset: { 
+            x: 145, 
+            y: 90 
+        }, // Initial offset
+        width: 50, // player 2 characterbox width
+        height: 75, // player 2 characterbox height
+    },
 });
 console.log(`Player initial position - X: ${player.position.x}, Y: ${player.position.y}`); // Log player2 start position
 
@@ -222,7 +261,7 @@ decreaseTimer()
 
 function animate () {
     window.requestAnimationFrame(animate)
-    c.fillStyle = 'black'
+    c.fillStyle = 'red'
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     backgroundFire.update()
@@ -232,7 +271,7 @@ function animate () {
     player.velocity.x = 0
     enemy.velocity.x = 0
 
-    // Player Movement
+// Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -1.75
@@ -244,7 +283,7 @@ function animate () {
         player.switchSprite('idle')
     }
 
-    // jumping
+// jumping
 
     if (player.velocity.y < 0) {
     player.switchSprite('jump')
@@ -252,7 +291,7 @@ function animate () {
         player.switchSprite('fall')
         } 
 
-    // Enemy Movement
+// Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -1.75
@@ -273,20 +312,25 @@ if (enemy.velocity.y < 0) {
         } 
 
 
-    // detect for collision.attacking
+// detect for collision.attacking
 
     if ( 
         rectangularCollision({
         rectangle1: player,
         rectangle2: enemy
         }) &&
-        player.isAttacking
+        player.isAttacking && player.framesCurrent === 4
     ) {
+        enemy.takeHit()
         player.isAttacking = false
-        enemy.health -= 10
         document.querySelector ('#enemyHealth').style.width = enemy.health + "%"
-    
     }
+
+// if attack misses
+   if (player.isAttacking && player.framesCurrent === 4 ) {
+    player.isAttacking = false
+   }
+
 
     if ( 
         rectangularCollision({
@@ -295,8 +339,8 @@ if (enemy.velocity.y < 0) {
         }) &&
         enemy.isAttacking
     ) {
+        player.takeHit()
         enemy.isAttacking = false
-        player.health -= 10
         document.querySelector ('#playerHealth').style.width = player.health + "%"
     }
 
@@ -312,7 +356,14 @@ if (enemy.velocity.y < 0) {
 
 animate()
 
+
+
+
+
+
 window.addEventListener('keydown', (event) => {
+
+if (!player.dead){
 
 // Player Movement 
     switch (event.key) {
@@ -330,9 +381,12 @@ window.addEventListener('keydown', (event) => {
         case ' ':
             player.attack()
             break
+    }
+}
+// Enemy Movement      
+if (!enemy.dead){
 
-
-// Enemy Movement        
+    switch (event.key){
         case 'ArrowRight':
             keys.ArrowRight.pressed = true
             enemy.lastKey = 'ArrowRight'
@@ -349,6 +403,7 @@ window.addEventListener('keydown', (event) => {
             break
 
     }
+}
 })
 
 window.addEventListener('keyup', (event) => {

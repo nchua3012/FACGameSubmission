@@ -3,9 +3,16 @@
 <head>
     <title>Nick Chua's FAC Game</title>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lacquer&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
+
     * {
         box-sizing: border-box;
+        font-family: Lacquer, system-ui;
+        font-size: x-large;
+        
     }   
     </style>
 </head>
@@ -30,10 +37,12 @@
             height: 30px; 
             width: 100%;
             display: flex;
+            
             justify-content: flex-end;">
 
                 <div style="
-                background-color: white; 
+                background-color: #1f1a4c; 
+                border-radius: 20%;
                 height: 30px;
                 width: 100%">
                 </div>
@@ -41,7 +50,11 @@
                 <div id= "playerHealth" 
                 div style = "
                 position: absolute; 
-                background: red; 
+                background: #8088f9; 
+                border-top: 2px solid white;
+                border-bottom: 2px solid white;
+                border-left: 2px solid white;
+                border-radius: 20%;
                 top: 0; 
                 right: 0; 
                 bottom: 0; 
@@ -54,13 +67,17 @@
             <div 
                 id="timer"
                 style="
-                background-color: green; 
-                height: 100px; 
-                width: 100px; 
+                background-color: #1f1a4c; 
+                height: 65px; 
+                width: 65px; 
                 flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                color: white;
+                border: 4px solid white;
+                font-size: large;
+                border-radius: 20%;
                 "
             >
                 00
@@ -74,14 +91,22 @@
             width: 100%;">
 
                 <div style="
-                background-color: white; 
+                background-color: #1f1a4c; 
+                border-radius: 20%;
+                border-top: 2px solid white;
+                border-bottom: 2px solid white;
+                border-right: 2px solid white;
                 height: 30px;">
                 </div>
  
                 <div id= "enemyHealth" 
                 div style = "
                 position: absolute; 
-                background: blue; 
+                background: #8088f9; 
+                border-top: 2px solid white;
+                border-bottom: 2px solid white;
+                border-right: 2px solid white;
+                border-radius: 20%;
                 top: 0; 
                 right: 0; 
                 bottom: 0; 
@@ -93,7 +118,6 @@
 
         <div id = "gameEndTie"; 
         style = "
-            
                 position: absolute; 
                 color:  white; 
                 align-items: center;
@@ -103,7 +127,8 @@
                 bottom: 0; 
                 left: 0;
                 display: none;"
-            > Tie
+                font-family: Lacquer, system-ui;
+            > TIE
         </div>
         
         <canvas></canvas>

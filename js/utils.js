@@ -1,12 +1,26 @@
 
-function rectangularCollision ({rectangle1, rectangle2}) {
-    return (
-        rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x && 
-        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width && 
-        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y && 
-        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-    )
+function rectangularCollision({ rectangle1, rectangle2 }) {
+
+    // Horizontal collision: Check if the attackBox overlaps with the characterBox horizontally
+    const horizontalCollision = 
+        rectangle1.attackBox.position.x + rectangle1.attackBox.width > rectangle2.characterBox.position.x &&
+        rectangle1.attackBox.position.x < rectangle2.characterBox.position.x + rectangle2.characterBox.width;
+
+    // Vertical collision: Check if the attackBox overlaps with the characterBox vertically
+    const verticalCollision = 
+        rectangle1.attackBox.position.y + rectangle1.attackBox.height > rectangle2.characterBox.position.y &&
+        rectangle1.attackBox.position.y < rectangle2.characterBox.position.y + rectangle2.characterBox.height;
+
+    // DEBUG - check if both horizontal and vertical collisions occur
+    if (horizontalCollision && verticalCollision) {
+        console.log('Collision detected between attackBox and characterBox');
+        return true; // Collision detected
+    }
+
+    return false; // No collision
 }
+
+
 
 function determineWinner({player, enemy, timerId}) {
     clearTimeout(timerId)

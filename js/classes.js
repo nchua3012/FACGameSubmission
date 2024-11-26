@@ -24,6 +24,7 @@ class Sprite {
         this.row = row
         this.validFrames = validFrames
         this.facing = "right"
+        this.dead = false
 
     }
         
@@ -62,10 +63,10 @@ if (this.facing === "left") {
             frameHeight * this.scale   // Draw height with scale
         )
 
-// DEBUG - border around the sprite frame
-        c.strokeStyle = "pink";  // Set the color of the border
-        c.lineWidth = 1;  // Set the width of the border
-        c.strokeRect(0, 0, frameWidth * this.scale, frameHeight * this.scale);  // Draw the border around the sprite
+// DEBUG - border around the sprite frame - commented out
+//      c.strokeStyle = "pink";  // Set the color of the border
+//       c.lineWidth = 1;  // Set the width of the border
+//      c.strokeRect(0, 0, frameWidth * this.scale, frameHeight * this.scale);  // Draw the border around the sprite
 
 
         c.restore();
@@ -85,6 +86,7 @@ animateFrames() {
     update() {
         this.draw()
         this.animateFrames()
+        
         }
     }
         
@@ -103,7 +105,7 @@ animateFrames() {
             offset= { x: 0, y: 0 },
             sprites,
             attackBox = {offset: {}, width:undefined, height:undefined},
-            characterBox = { width: undefined, height: undefined }
+            characterBox = { offset: { x: 0, y: 0 }, width: undefined, height: undefined }
         }) {
 
 //super calls sprite class constructers
@@ -123,16 +125,27 @@ animateFrames() {
             this.width = 50
             this.height = 75
             this.lastKey = null
+            
 
 // characterBox if provided, else use default size
 this.characterBox = {
     position: {
-        x: this.position.x,
-        y: this.position.y
+        x: this.position.x + (characterBox.offset?.x || 0),
+        y: this.position.y + (characterBox.offset?.y || 0),
     },
-    width: characterBox.width || this.width,  
-    height: characterBox.height || this.height  
+    offset: characterBox.offset || { x: 0, y: 0 },
+    width: characterBox.width || this.width * this.scale, 
+    height: characterBox.height || this.height * this.scale 
 };
+
+// debugging positions of characterBox
+//console.log("CharacterBox Offsets:", this.characterBox.offset);
+//console.log('Character Box X:', this.characterBox.position.x);
+//console.log('Character Box Y:', this.characterBox.position.y);
+//console.log('Character Box Width:', this.characterBox.width);
+//console.log('Character Box Height:', this.characterBox.height);
+//console.log('Position X:', this.position.x);
+//console.log('Offset X:', this.characterBox.offset.x);
 
 //start position.y is within the canvas bounds
 
@@ -167,9 +180,23 @@ this.characterBox = {
             }
                 
             update() {
+                
+                
                 this.draw();
-                this.animateFrames();
+                if(!this.dead) this.animateFrames()
+            
 
+ // Update characterBox position with offsets
+ this.characterBox.position.x = this.position.x + this.characterBox.offset.x;
+ this.characterBox.position.y = this.position.y + this.characterBox.offset.y;
+
+ // Gravity
+ if (this.position.y + this.height + this.velocity.y >= canvas.height - 190) {
+     this.velocity.y = 0;
+     this.position.y = canvas.height - this.height - 190;
+ } else {
+     this.velocity.y += gravity;
+ }
 //character directions based on velocity            
                 if (this.velocity.x > 0) {
                     this.facing = "right";
@@ -182,49 +209,96 @@ this.characterBox = {
                 this.position.y += this.velocity.y;  // Vertical movement
 
 
-//updates to attack box positioning
-                this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-                this.attackBox.position.y = this.position.y + this.attackBox.offset.y;
+// Player attack setup
+player.attackBox.position.x = player.position.x + player.attackBox.offset.x;
+player.attackBox.position.y = player.position.y + player.attackBox.offset.y;
+
+// Enemy attack setup
+enemy.attackBox.position.x = enemy.position.x + enemy.attackBox.offset.x;
+enemy.attackBox.position.y = enemy.position.y + enemy.attackBox.offset.y;
+
+if (this.isAttacking) {
+    if (rectangularCollision({ rectangle1: player, rectangle2: enemy })) {
+        console.log('Player hit enemy!');
+    }
+}
+
+// Check enemy collision with player (if they are attacking)
+if (enemy.isAttacking) {
+    if (rectangularCollision({ rectangle1: enemy, rectangle2: player })) {
+        console.log('Enemy hit player!');
+    }
+}
+
+
+// DEBUG - character box area  
+//c.fillStyle = 'rgba(0, 255, 0, 0.3)'; // Green for characterBox
+//c.fillRect(
+//    this.characterBox.position.x + this.characterBox.offset.x,
+//    this.characterBox.position.y + this.characterBox.offset.y, 
+//   this.characterBox.width,
+//  this.characterBox.height
+//);
+
+// DEBUG - attack box area  
+//c.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red for attackBox
+//c.fillRect(
+//    this.attackBox.position.x + this.attackBox.offset.x, 
+//    this.attackBox.position.y + this.attackBox.offset.y, 
+//    this.attackBox.width,
+//   this.attackBox.height
+//);
 
 
 
- // DEBUG - attack box area               
-c.fillStyle = player.color
-c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height)
-        
-//updates to players position - velocity
-                this.characterBox.position.x = this.position.x;
-                this.characterBox.position.y = this.position.y;
-
- // DEBUG - character box area  
-c.fillStyle = "rgba(0, 255, 0, 0.3)";  // Green with some transparency
-c.fillRect(this.characterBox.position.x, this.characterBox.position.y, this.characterBox.width, this.characterBox.height);
-
-
-        
 //gravity effect
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 190) {
+                if (this.position.y + this.height + this.velocity.y >= canvas.height - 200) {
                     this.velocity.y = 0;
                     this.position.y = canvas.height - this.height - 190;
                     } else {
                         this.velocity.y += gravity}
 
+
 // attacking      
-                if (this.isAttacking && this.framesCurrent === this.sprites.attack.framesMaxX - 1) {
+                if (this.isAttacking && this.framesCurrent === this.sprites.attack.framesMaxX - 200) {
                         this.isAttacking = false;
                             this.switchSprite('idle');  
+
                         }
             }
+//take hit
+takeHit(){
+    this.health -= 20;
+    if (this.health <= 0) {
+        this.switchSprite ('death')
+    } else this.switchSprite('takeHit')
+
+}
+
 
 // swapping sprites based on action
 
             switchSprite(sprite) {
+                if(this.image === this.sprites.death.image) 
+                    if (this.image === this.sprites.death.image) {
+                        if (this.framesCurrent === this.sprites.death.validFrames.length - 1) {
+                            this.dead = true; 
+                        }
+                        return
+                    }
                 if (
                     this.image === this.sprites.attack.image 
-                    && this.framesCurrent < this.sprites.attack.framesMaxX - 1
-        ) 
-            return // Don't switch sprite if attack animation is still in progress
+                    && this.framesCurrent < this.sprites.attack.validFrames.length - 1
+                ) 
+                return // Don't switch sprite if attack animation is still in progress
         
+                if(
+                    this.image === this.sprites.takeHit.image 
+                    && this.framesCurrent < this.sprites.takeHit.validFrames.length - 1
+                )
+                return
+
+
                 switch (sprite) {
                     case 'idle':
                         if (this.image !== this.sprites.idle.image) {
@@ -280,6 +354,28 @@ c.fillRect(this.characterBox.position.x, this.characterBox.position.y, this.char
                             this.validFrames = this.sprites.fall.validFrames;
                         }
                     break
+
+                    case 'takeHit':
+                        if (this.image !== this.sprites.takeHit.image) {
+                            this.image = this.sprites.takeHit.image;
+                            this.framesMaxX = this.sprites.takeHit.framesMaxX;
+                            this.framesMaxY = this.sprites.takeHit.framesMaxY;
+                            this.framesCurrent = 0;
+                            this.row = this.sprites.takeHit.row;
+                            this.validFrames = this.sprites.takeHit.validFrames;
+                        }
+                    break
+
+                    case 'death':
+                        if (this.image !== this.sprites.death.image) {
+                            this.image = this.sprites.death.image;
+                            this.framesMaxX = this.sprites.death.framesMaxX;
+                            this.framesMaxY = this.sprites.death.framesMaxY;
+                            this.framesCurrent = 0;
+                            this.row = this.sprites.death.row;
+                            this.validFrames = this.sprites.death.validFrames;
+                        }
+                    break
                 }
             }
 
@@ -289,7 +385,13 @@ c.fillRect(this.characterBox.position.x, this.characterBox.position.y, this.char
                 if (!this.isAttacking) {
                     this.switchSprite('attack');
                     this.isAttacking = true;
+                    console.log(
+                        'Collision detected:',
+                        rectangularCollision({ rectangle1: player, rectangle2: enemy })
+                    );
         
                 }
             }
+
+            
         }

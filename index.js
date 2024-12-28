@@ -255,29 +255,39 @@ const keys = {
 }
 
 let lastKey
+let lastFrameTime = 0;
 
 
 decreaseTimer()
 
-function animate () {
+function animate (currentTime) {
+
+    const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+    lastFrameTime = currentTime;
+
     window.requestAnimationFrame(animate)
+
+    // Clear canvas
     c.fillStyle = 'red'
     c.fillRect(0, 0, canvas.width, canvas.height)
+
+    // Update objects
     background.update()
     backgroundFire.update()
-    player.update()
-    enemy.update()
+    player.update(deltaTime);
+    enemy.update(deltaTime);
 
+    // Reset velocity
     player.velocity.x = 0
     enemy.velocity.x = 0
 
 // Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -1.75
+        player.velocity.x = -100 * deltaTime;
         player.switchSprite('run')
     } else if (keys.d.pressed&& player.lastKey === 'd'){
-        player.velocity.x = 1.75
+        player.velocity.x = 100 * deltaTime;
         player.switchSprite('run')
     } else {
         player.switchSprite('idle')
@@ -294,10 +304,10 @@ function animate () {
 // Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -1.75
+        enemy.velocity.x = -100 * deltaTime;
         enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight'){
-        enemy.velocity.x = 1.75
+        enemy.velocity.x = 100 * deltaTime;
         enemy.switchSprite('run')
     } else {
         enemy.switchSprite('idle')
@@ -349,12 +359,14 @@ if (enemy.velocity.y < 0) {
     if (enemy.health <=0 || player.health <=0 ) {
     determineWinner ({player, enemy, timerId})
     }
+
+    
 }
 
 
 
 
-animate()
+requestAnimationFrame(animate);
 
 
 
@@ -427,3 +439,4 @@ window.addEventListener('keyup', (event) => {
         
     }
 })
+

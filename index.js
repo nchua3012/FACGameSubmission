@@ -6,7 +6,7 @@ canvas.height = 576
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = 0.14
+const gravity = .9
 
 // Background Image
 
@@ -109,15 +109,6 @@ sprites: {
     }
 
 },
-attackBox:{
-    offset:{
-        x:160,
-        y:90
-    },
-    width: 75,
-    height:75
-},
-
 characterBox: { 
     offset: { 
         x: 130, 
@@ -206,14 +197,7 @@ sprites: {
         validFrames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
         }
     },
-    attackBox:{
-        offset:{
-            x:100,
-            y:90
-        },
-        width: 75,
-        height: 75
-    },
+    
     characterBox: { 
         offset: { 
             x: 145, 
@@ -262,7 +246,7 @@ decreaseTimer()
 
 function animate (currentTime) {
 
-    const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+    const deltaTime = (currentTime - lastFrameTime) / 30; 
     lastFrameTime = currentTime;
 
     window.requestAnimationFrame(animate)
@@ -284,10 +268,10 @@ function animate (currentTime) {
 // Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -100 * deltaTime;
+        player.velocity.x = -15 * deltaTime;
         player.switchSprite('run')
     } else if (keys.d.pressed&& player.lastKey === 'd'){
-        player.velocity.x = 100 * deltaTime;
+        player.velocity.x = 15 * deltaTime;
         player.switchSprite('run')
     } else {
         player.switchSprite('idle')
@@ -304,10 +288,10 @@ function animate (currentTime) {
 // Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -100 * deltaTime;
+        enemy.velocity.x = -15 * deltaTime;
         enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight'){
-        enemy.velocity.x = 100 * deltaTime;
+        enemy.velocity.x = 15 * deltaTime;
         enemy.switchSprite('run')
     } else {
         enemy.switchSprite('idle')
@@ -321,6 +305,29 @@ if (enemy.velocity.y < 0) {
         enemy.switchSprite('fall')
         } 
 
+  // Player attackbox
+  if (player.isAttacking) {
+    player.attackBox.width = 75;   
+    player.attackBox.height = 75;  
+    player.attackBox.offset.x = 160;  
+    player.attackBox.offset.y = 90;   
+} else {
+ // Hide the attack box when not attacking   
+    player.attackBox.width = 0;  
+    player.attackBox.height = 0;
+}
+
+// Enemy attackbox
+    if (enemy.isAttacking) {
+        enemy.attackBox.width = 75;
+        enemy.attackBox.height = 75;
+        enemy.attackBox.offset.x = 100;
+        enemy.attackBox.offset.y = 90;
+    } else {
+// Hide the attack box when not attacking        
+        enemy.attackBox.width = 0;  
+        enemy.attackBox.height = 0;
+    }
 
 // detect for collision.attacking
 
@@ -340,7 +347,9 @@ if (enemy.velocity.y < 0) {
    if (player.isAttacking && player.framesCurrent === 4 ) {
     player.isAttacking = false
    }
-
+   if (enemy.isAttacking && enemy.framesCurrent === 4 ) {
+    enemy.isAttacking = false
+   }
 
     if ( 
         rectangularCollision({

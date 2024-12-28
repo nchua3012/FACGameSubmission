@@ -19,7 +19,7 @@ class Sprite {
         this.framesMaxY = framesMaxY // Total frames in a column
         this.framesCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 19 // Adjust for speed of animation
+        this.framesHold = 3 // Adjust for speed of animation
         this.offset = offset
         this.row = row
         this.validFrames = validFrames
@@ -72,23 +72,26 @@ if (this.facing === "left") {
         c.restore();
     }
 
-animateFrames() {
-    this.framesElapsed++
-    if (this.framesElapsed % this.framesHold === 0) {
-        if (this.framesCurrent < this.validFrames.length - 1) { // to be checked - need to understand
+    animateFrames(deltaTime) {
+        // Scale the framesElapsed by deltaTime
+        this.framesElapsed += deltaTime;
+
+        if (this.framesElapsed >= this.framesHold) {
             this.framesCurrent++;
-        } else {
-            this.framesCurrent = 0; // this loops back to original frame 
+            this.framesElapsed = 0;
+
+            // Loop back to the first frame if we reach the end
+            if (this.framesCurrent >= this.validFrames.length) {
+                this.framesCurrent = 0;
+            }
         }
+    }
+
+    update(deltaTime) {
+        this.draw();
+        this.animateFrames(deltaTime); // Pass deltaTime here
     }
 }
-
-    update() {
-        this.draw()
-        this.animateFrames()
-        
-        }
-    }
         
 //Fighter (player 1 & player 2)
 
@@ -179,11 +182,9 @@ this.characterBox = {
                 console.log(this.sprites)
             }
                 
-            update() {
-                
-                
+            update(deltaTime) {
                 this.draw();
-                if(!this.dead) this.animateFrames()
+                if (!this.dead) this.animateFrames(deltaTime);
             
 
  // Update characterBox position with offsets
@@ -195,7 +196,7 @@ this.characterBox = {
      this.velocity.y = 0;
      this.position.y = canvas.height - this.height - 190;
  } else {
-     this.velocity.y += gravity;
+     this.velocity.y += gravity * deltaTime;
  }
 //character directions based on velocity            
                 if (this.velocity.x > 0) {
@@ -234,7 +235,7 @@ if (enemy.isAttacking) {
 // DEBUG - character box area  
 //c.fillStyle = 'rgba(0, 255, 0, 0.3)'; // Green for characterBox
 //c.fillRect(
-//    this.characterBox.position.x + this.characterBox.offset.x,
+//   this.characterBox.position.x + this.characterBox.offset.x,
 //    this.characterBox.position.y + this.characterBox.offset.y, 
 //   this.characterBox.width,
 //  this.characterBox.height
@@ -243,10 +244,10 @@ if (enemy.isAttacking) {
 // DEBUG - attack box area  
 //c.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red for attackBox
 //c.fillRect(
-//    this.attackBox.position.x + this.attackBox.offset.x, 
+//   this.attackBox.position.x + this.attackBox.offset.x, 
 //    this.attackBox.position.y + this.attackBox.offset.y, 
-//    this.attackBox.width,
-//   this.attackBox.height
+ //   this.attackBox.width,
+ //  this.attackBox.height
 //);
 
 
@@ -256,7 +257,7 @@ if (enemy.isAttacking) {
                     this.velocity.y = 0;
                     this.position.y = canvas.height - this.height - 190;
                     } else {
-                        this.velocity.y += gravity}
+                        this.velocity.y += gravity* deltaTime;}
 
 
 // attacking      

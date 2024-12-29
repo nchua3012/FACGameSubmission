@@ -6,7 +6,9 @@ canvas.height = 576
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const gravity = .9
+// ajustments for jumping made here
+const gravity = 22
+const jumpStrength = -16;
 
 // Background Image
 
@@ -244,9 +246,22 @@ let lastFrameTime = 0;
 
 decreaseTimer()
 
+function applyGravity(character, deltaTime) {
+    const gravityForce = 10; 
+    const groundLevel = canvas.height - 190;
+
+    if (character.position.y + character.height + character.velocity.y >= groundLevel) {
+        character.velocity.y = 0;
+        character.position.y = groundLevel - character.height;
+    } else {
+        character.velocity.y += gravityForce * deltaTime; 
+    }
+}
+
+
 function animate (currentTime) {
 
-    const deltaTime = (currentTime - lastFrameTime) / 30; 
+    const deltaTime = (currentTime - lastFrameTime) / 1000; 
     lastFrameTime = currentTime;
 
     window.requestAnimationFrame(animate)
@@ -256,10 +271,14 @@ function animate (currentTime) {
     c.fillRect(0, 0, canvas.width, canvas.height)
 
     // Update objects
-    background.update()
-    backgroundFire.update()
+    background.update();
+    backgroundFire.update(deltaTime);
     player.update(deltaTime);
     enemy.update(deltaTime);
+    
+
+    applyGravity(player, deltaTime);
+    applyGravity(enemy, deltaTime);
 
     // Reset velocity
     player.velocity.x = 0
@@ -268,10 +287,10 @@ function animate (currentTime) {
 // Player Movement
     
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -15 * deltaTime;
+        player.velocity.x = -300 * deltaTime;
         player.switchSprite('run')
     } else if (keys.d.pressed&& player.lastKey === 'd'){
-        player.velocity.x = 15 * deltaTime;
+        player.velocity.x = 300 * deltaTime;
         player.switchSprite('run')
     } else {
         player.switchSprite('idle')
@@ -285,13 +304,17 @@ function animate (currentTime) {
         player.switchSprite('fall')
         } 
 
+        if (keys.w.pressed && player.position.y >= canvas.height - 190 - player.height) {
+            player.velocity.y = jumpStrength; 
+        }
+
 // Enemy Movement
     
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -15 * deltaTime;
+        enemy.velocity.x = -300 * deltaTime;
         enemy.switchSprite('run')
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight'){
-        enemy.velocity.x = 15 * deltaTime;
+        enemy.velocity.x = 300 * deltaTime;
         enemy.switchSprite('run')
     } else {
         enemy.switchSprite('idle')
@@ -304,6 +327,10 @@ if (enemy.velocity.y < 0) {
     } else if (enemy.velocity.y > 0) {
         enemy.switchSprite('fall')
         } 
+
+        if (keys.ArrowUp.pressed && enemy.position.y >= canvas.height - 190 - enemy.height) {
+            enemy.velocity.y = jumpStrength;
+        }
 
   // Player attackbox
   if (player.isAttacking) {
@@ -397,7 +424,9 @@ if (!player.dead){
             player.lastKey = 'a'
             break  
         case 'w':
-            player.velocity.y = -10
+            if (player.position.y >= canvas.height - 190 - player.height) {  
+                player.velocity.y = jumpStrength; 
+            }
             break
         case ' ':
             player.attack()
@@ -417,7 +446,9 @@ if (!enemy.dead){
             enemy.lastKey = 'ArrowLeft'
             break
         case 'ArrowUp':
-            enemy.velocity.y = -10
+            if (enemy.position.y >= canvas.height - 190 - enemy.height) {  
+                enemy.velocity.y = jumpStrength; 
+            }
             break
         case 'ArrowDown':
             enemy.attack()

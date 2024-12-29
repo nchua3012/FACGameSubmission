@@ -19,7 +19,7 @@ class Sprite {
         this.framesMaxY = framesMaxY // Total frames in a column
         this.framesCurrent = 0
         this.framesElapsed = 0
-        this.framesHold = 3 // Adjust for speed of animation
+        this.framesHold = .075 // Adjust for speed of animation
         this.offset = offset
         this.row = row
         this.validFrames = validFrames
@@ -30,7 +30,7 @@ class Sprite {
         
     draw() {
 
-// code addded to ensure the image is loaded before drawing - need to understand
+// code addded to ensure the image is loaded before drawing 
         if (!this.image) return;
 
 // Calculate the frame width and height based on sprite sheet dimensions and number of frames
@@ -89,7 +89,8 @@ if (this.facing === "left") {
 
     update(deltaTime) {
         this.draw();
-        this.animateFrames(deltaTime); // Pass deltaTime here
+        this.animateFrames(deltaTime); 
+        
     }
 }
         
@@ -182,22 +183,34 @@ this.characterBox = {
                 console.log(this.sprites)
             }
                 
+  // Gravity updated with deltaTime
+  applyGravity(deltaTime) {
+    if (this.position.y + this.height + this.velocity.y >= canvas.height - 190) {
+        this.velocity.y = 0;
+        this.position.y = canvas.height - this.height - 190; 
+    } else {
+        this.velocity.y += gravity * deltaTime;
+    }
+}
+// jump strength
+jump() {
+    
+    if (this.position.y === canvas.height - this.height - 190) {
+        this.velocity.y = jumpStrength; 
+    }
+}
             update(deltaTime) {
                 this.draw();
                 if (!this.dead) this.animateFrames(deltaTime);
             
+// Gravity
+                this.applyGravity(deltaTime);
 
  // Update characterBox position with offsets
  this.characterBox.position.x = this.position.x + this.characterBox.offset.x;
  this.characterBox.position.y = this.position.y + this.characterBox.offset.y;
 
- // Gravity
- if (this.position.y + this.height + this.velocity.y >= canvas.height - 190) {
-     this.velocity.y = 0;
-     this.position.y = canvas.height - this.height - 190;
- } else {
-     this.velocity.y += gravity * deltaTime;
- }
+
 //character directions based on velocity            
                 if (this.velocity.x > 0) {
                     this.facing = "right";
@@ -249,15 +262,6 @@ if (enemy.isAttacking) {
  //   this.attackBox.width,
  //  this.attackBox.height
 //);
-
-
-
-//gravity effect
-                if (this.position.y + this.height + this.velocity.y >= canvas.height - 200) {
-                    this.velocity.y = 0;
-                    this.position.y = canvas.height - this.height - 190;
-                    } else {
-                        this.velocity.y += gravity* deltaTime;}
 
 
 // attacking      

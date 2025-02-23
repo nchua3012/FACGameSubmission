@@ -1,4 +1,3 @@
-# FACGameSubmission
-FAC submission game. 
+My Fighting Game!
 
-2 player fighting game
+A 2 player fighting game built in javascprit.

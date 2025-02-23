@@ -1,3 +1,3 @@
 My Fighting Game!
 
-A 2 player fighting game built in javascprit.
+A two-player fighting game built using JavaScript, showcasing interactive gameplay and real-time player actions.

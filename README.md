@@ -2,5 +2,4 @@ My Fighting Game!
 
 A two-player fighting game built using JavaScript, showcasing interactive gameplay and real-time player actions.
 
-![image](https://github.com/user-attachments/assets/e6eb3150-f461-4383-ad95-e30f34cbf45f)
-
+![Game Website](https://github.com/user-attachments/assets/f8964f1c-9727-4441-8ee7-a4eb27a54fe2)
